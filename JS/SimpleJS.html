@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html >
+    <head>
+        <title>Agl-developer-test</title>
+    </head>
+    <body>
+        <h1>Agl-developer-test</h1>
+        <div id="cat"></div>
+        <script>
+            var male = []
+		    var female = []
+            var catStr = ""
+
+            fetch("http://agl-developer-test.azurewebsites.net/people.json")
+                .then(response => response.json())
+                .then(data => {
+                    handleResponse(data)
+                    var catStr =""
+                    var catArr = [
+                        { title: 'Male', textArr: male},
+                        { title: 'Female', textArr: female}
+		            ]
+                    console.log(catArr)
+                    catArr.forEach(e => {
+                        catStr += `
+                        <div class = "row">
+                            <div class = "title"><b>${e.title}</b></div>
+                            <div class = "text">
+                                ${e.textArr.map((element,index) =>{
+                                    return `<span>${element}</br></span>`
+                                }).join('')}
+                            </div>
+                        </div></br>
+                        `
+                    })
+                    document.getElementById("cat").innerHTML = catStr;
+                })
+
+            function handleResponse(dataList){
+                for(var i = 0; i < dataList.length;i ++){
+                    var dataObj = dataList[i];
+                    var pets = dataObj.pets
+                    if(pets == null){
+                        continue
+                    }
+                    for(var j = 0; j < pets.length;j++){
+                        var pet = pets[j]
+                        if(pet.type == "Cat"){
+                            if(dataObj.gender == "Male"){
+                                male.push(pet.name)
+                            }
+                            if(dataObj.gender == "Female"){
+                                female.push(pet.name)
+                            }
+                        }
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>
